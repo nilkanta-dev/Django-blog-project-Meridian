@@ -1,0 +1,100 @@
+{% extends "core/base.html" %}
+{% load thumbnail %}
+
+{% block content %}
+<!-- Search -->
+<form method="get" class="flex flex-col sm:flex-row justify-center w-full sm:w-full lg:w-1/2 mb-4 mx-auto space-y-2 sm:space-y-0 sm:space-x-2">
+    {{ form.search }}
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded w-full sm:w-auto">
+        Search
+    </button>
+</form>
+
+{% if query %}
+    <p class="mb-4 text-gray-400 text-center">
+        {{ results_count }} result{% if results_count != 1 %}s{% endif %} found for 
+        "<strong>{{ query }}</strong>"
+    </p>
+{% endif %}
+
+<!-- Posts Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% if featured_post %}
+    <!-- Featured Post -->
+    <div class="sm:col-span-2 sm:row-span-2 py-2 px-2 my-2">
+        {% if featured_post.image %}
+            <img src="{{ featured_post.image|thumbnail_url:'post_list' }}" 
+                 alt="{{ featured_post.title }}" 
+                 class="w-full mb-2 rounded-lg object-cover">
+        {% endif %}
+        
+        <a href="{{ featured_post.get_absolute_url }}">
+            <h3 class="font-bold text-blue-500 text-2xl sm:text-3xl lg:text-4xl leading-tight">
+                {{ featured_post.title }}
+            </h3>
+        </a>
+        
+        <p class="text-xs sm:text-sm text-gray-400 mt-1">
+            <span>{{ featured_post.published_date|date:"F j, Y" }}</span> 
+            <span class="ml-2">By: 
+                <a href="{% url 'single_user_posts' username=featured_post.author.username %}" class="text-blue-400">
+                    {{ featured_post.author.username }}
+                </a>
+            </span>
+        </p>
+
+        <p class="text-sm sm:text-base text-white mt-2">
+            {{ featured_post.content|truncatewords_html:150 }}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Other Posts -->
+    {% for post in posts %}
+    <div class="py-2 px-2 my-2">
+        {% if post.image %}
+            <img src="{{ post.image|thumbnail_url:'post_list' }}" 
+                 alt="{{ post.title }}" 
+                 class="w-full mb-2 rounded-lg object-cover">
+        {% endif %}
+        
+        <a href="{{ post.get_absolute_url }}">
+            <h3 class="font-bold text-blue-500 text-lg sm:text-xl">
+                {{ post.title }}
+            </h3>
+        </a>
+        
+        <p class="text-xs sm:text-sm text-gray-400 mt-1">
+            <span>{{ post.published_date|date:"F j, Y" }}</span> 
+            <span class="ml-2">By: 
+                <a href="{% url 'single_user_posts' username=post.author.username %}" class="text-blue-400">
+                    {{ post.author.username }}
+                </a>
+            </span>
+        </p>
+
+        <p class="text-sm sm:text-base text-white mt-2">
+            {{ post.content|truncatewords_html:40 }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+<div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-white">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">Previous</a>
+    {% endif %}
+
+    <span class="px-4 py-2 bg-gray-700 rounded-lg">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">Last</a>
+    {% endif %}
+</div>
+{% endblock %}

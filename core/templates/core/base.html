@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"/>
+
+    <title>{% block title %}{{ brand_name }}{% endblock %}</title>
+</head>
+<body class="bg-stone-800 flex flex-col min-h-screen text-white">
+
+    <!-- Header -->
+    <header class="bg-indigo-800 px-4 sm:px-6 py-4 shadow-lg">
+        <div class="flex items-center justify-between h-16">
+            <!-- Brand -->
+            <a href="/" class="text-xl sm:text-2xl font-bold text-indigo-200">
+                {{ brand_name }}
+            </a>
+
+            <!-- Navbar -->
+            <div x-data="{ open: false }" class="relative">
+                <!-- Hamburger (Mobile) -->
+                <button @click="open = !open" class="sm:hidden text-indigo-200 focus:outline-none">
+                    <i :class="open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
+                </button>
+
+                <!-- Links -->
+                <nav :class="{'block': open, 'hidden': !open}"
+                     class="absolute right-0 mt-2 w-40 sm:w-auto sm:static sm:mt-0 sm:flex sm:space-x-6 bg-indigo-700 sm:bg-transparent rounded-lg sm:rounded-none shadow sm:shadow-none p-2 sm:p-0">
+                    {% include "core/partials/navbar.html" %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow px-4 sm:px-6 lg:px-8 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include "core/partials/footer.html" %}
+</body>
+</html>

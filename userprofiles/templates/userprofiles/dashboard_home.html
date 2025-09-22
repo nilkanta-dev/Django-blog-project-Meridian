@@ -1,0 +1,81 @@
+{% extends 'userprofiles/dashboard.html' %}
+
+
+{% block content %}
+{% if messages %}
+  <div id="messages" class="fixed top-4 left-4 space-y-2 z-50">
+    {% for message in messages %}
+      {% with tags=message.tags %}
+      <div class="message-item flex items-center px-4 py-3 rounded-lg shadow-lg opacity-100 transition-opacity duration-500
+                  {% if 'success' in tags %} bg-green-500 text-white
+                  {% elif 'error' in tags %} bg-red-500 text-white
+                  {% else %} bg-gray-800 text-white {% endif %}"
+           role="status" aria-live="polite">
+        {% if 'success' in tags %}
+          <!-- check icon -->
+          <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        {% endif %}
+
+        <span class="text-sm">{{ message }}</span>
+      </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('messages');
+      if (!container) return;
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        container.querySelectorAll('.message-item').forEach(el => {
+          el.classList.add('opacity-0');
+        });
+        setTimeout(() => container.remove(), 550);
+      }, 3000);
+    });
+  </script>
+{% endif %}
+
+
+    <main class="flex-1 p-8">
+        <h1 class="text-2xl font-bold mb-6">Your Posts</h1>
+
+        {% if recent_posts %}
+            <div class="grid gap-6">
+                {% for post in recent_posts %}
+                    <div class="bg-white shadow rounded-xl p-6">
+                        <h2 class="text-xl font-semibold mb-2">{{ post.title }}</h2>
+                        <p class="text-gray-600 mb-4">{{ post.content|truncatewords_html:30 }}</p>
+                        <div class="flex space-x-3 mt-3">
+                            <a href="{% url 'edit_post' post.id %}" 
+                               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                               Edit
+                            </a>
+                            <a href="{% url 'delete_post' post.id %}" 
+                               class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                               Delete
+                            </a>
+                            {% if not post.is_published %}
+
+                            <form action="{% url 'publish_post' slug=post.slug %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition">Publish</button>
+
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500">You haven’t created any posts yet.</p>
+        {% endif %}
+    </main>
+
+    {% endblock %}
+
+   

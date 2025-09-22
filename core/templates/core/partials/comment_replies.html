@@ -1,0 +1,60 @@
+{% if comment.replies.all %}
+  <div class="ml-6 mt-2">
+    <!-- Toggle button -->
+    <button type="button"
+            class="text-sm text-blue-600 hover:underline"
+            onclick="toggleReplies('replies-{{ comment.pk }}', this)">
+      Show {{ comment.replies.count }} replies
+    </button>
+
+    <!-- Replies container (hidden by default) -->
+    <div id="replies-{{ comment.pk }}" class="hidden mt-3 space-y-3">
+      {% for reply in comment.replies.all %}
+        <div class="p-3 border border-gray-200 rounded-lg bg-gray-50">
+          <p class="text-gray-700 text-sm">{{ reply.content }}</p>
+          <p class="text-xs text-gray-500 mt-1">
+            By <span class="font-medium">{{ reply.user }}</span>
+            • {{ reply.created_at|date:"M d, Y H:i" }}
+          </p>
+
+          <!-- Actions -->
+          <div class="flex items-center space-x-3 mt-1 text-xs">
+            {% if request.user == reply.user %}
+              <a href="{% url 'edit_comment' post.slug reply.pk %}" class="text-blue-600 hover:underline">Edit</a>
+              <form action="{% url 'delete_comment' post.slug reply.pk %}" method="post" class="inline">
+                {% csrf_token %}
+                <button type="submit"
+                        class="text-red-600 hover:underline"
+                        onclick="return confirm('Delete this reply?');">
+                  Delete
+                </button>
+              </form>
+            {% endif %}
+            <button type="button"
+                    onclick="document.getElementById('reply-form-{{ reply.pk }}').classList.toggle('hidden')"
+                    class="text-gray-600 hover:underline">
+              Reply
+            </button>
+          </div>
+
+          <!-- Inline reply form -->
+          <div id="reply-form-{{ reply.pk }}" class="hidden mt-2">
+            <form method="post" action="{% url 'reply_comment' post.slug reply.pk %}">
+              {% csrf_token %}
+              <textarea name="content" rows="2"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-black"
+                placeholder="Write your reply..."></textarea>
+              <button type="submit"
+                class="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                Post Reply
+              </button>
+            </form>
+          </div>
+
+          <!-- Recursive include for deeper replies -->
+          {% include "core/partials/comment_replies.html" with comment=reply %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

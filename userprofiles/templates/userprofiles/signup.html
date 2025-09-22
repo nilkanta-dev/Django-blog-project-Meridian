@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+
+<div class="max-w-md mx-auto mt-10 bg-black shadow-lg rounded-xl p-6 border-blue-300">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">Sign Up</h2>
+    <form method="POST" action="" class="space-y-4" novalidate>
+        {% csrf_token %}
+        
+       <div>
+            {% for error in form.username.errors %}
+            <p class="text-red-400">*{{ error }}<p>
+              {% endfor %}
+            {{ form.username }}
+            
+        </div>
+
+        <div>
+            {% for error in form.email.errors %}
+            <p class="text-red-400">*{{ error }}<p>
+              {% endfor %}
+            {{ form.email }}
+            
+        </div>
+        
+        <!--Password1-->
+        
+        {% include 'userprofiles/partials/password_field.html' with field=form.password1 field_id="password1" %}
+    
+      
+        <!-- Password2 -->
+        {% include 'userprofiles/partials/password_field.html' with field=form.password2 field_id="password2" %}
+      
+        
+        <button type="submit" 
+                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition">
+            Create Account
+        </button>
+    </form>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Toggle for password1
+    const togglePassword1 = document.getElementById("toggle_password1");
+    const passwordInput1 = document.getElementById("password1");
+    const eyeOpen1 = document.getElementById("eyeOpen_password1");
+    const eyeClosed1 = document.getElementById("eyeClosed_password1");
+
+    togglePassword1.addEventListener("click", () => {
+      const isHidden = passwordInput1.type === "password";
+      passwordInput1.type = isHidden ? "text" : "password";
+      eyeOpen1.classList.toggle("hidden", !isHidden);
+      eyeClosed1.classList.toggle("hidden", isHidden);
+    });
+
+    // Toggle for password2
+    const togglePassword2 = document.getElementById("toggle_password2");
+    const passwordInput2 = document.getElementById("password2");
+    const eyeOpen2 = document.getElementById("eyeOpen_password2");
+    const eyeClosed2 = document.getElementById("eyeClosed_password2");
+
+    togglePassword2.addEventListener("click", () => {
+      const isHidden = passwordInput2.type === "password";
+      passwordInput2.type = isHidden ? "text" : "password";
+      eyeOpen2.classList.toggle("hidden", !isHidden);
+      eyeClosed2.classList.toggle("hidden", isHidden);
+    });
+  });
+</script>
+
+{% endblock %}

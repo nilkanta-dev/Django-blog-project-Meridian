@@ -1,0 +1,69 @@
+
+{% extends 'userprofiles/dashboard.html' %}
+
+{% block content %}
+<div class="w-full mx-auto mt-10 bg-white shadow-lg rounded-xl p-6">
+  <!-- Avatar + Name -->
+  <div class="flex items-center space-x-6">
+  	
+    <img src="{% if user_profile.profile.avatar %}{{ user_profile.profile.avatar.url }}{% else %}/media/avatars/default.png{% endif %}" 
+     alt="User Avatar"
+     class="w-24 h-24 rounded-full object-cover border-4 border-indigo-500 shadow-md"
+     style="object-position: 50% 30%;">
+
+    <div>
+
+
+      <h1 class="text-2xl font-bold text-gray-800">{{ user_profile.get_full_name | default:user_profile.username | capfirst }}</h1>
+      <p class="text-sm text-gray-500">{{ user_profile.email }}</p>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <hr class="my-6 border-gray-200">
+
+  <!-- User Details -->
+  <div class="space-y-3">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-700 font-medium">Staff Status:</span>
+      <span class="px-3 py-1 rounded-full text-sm 
+                   {% if user_profile.is_staff %}
+                     bg-green-100 text-green-700
+                   {% else %}
+                     bg-red-100 text-red-700
+                   {% endif %}">
+        {{ user_profile.is_staff|yesno:"Yes,No" }}
+      </span>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-gray-700 font-medium">Superuser:</span>
+      <span class="px-3 py-1 rounded-full text-sm 
+                   {% if user_profile.is_superuser %}
+                     bg-green-100 text-green-700
+                   {% else %}
+                     bg-red-100 text-red-700
+                   {% endif %}">
+        {{ user_profile.is_superuser|yesno:"Yes,No" }}
+      </span>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-gray-700 font-medium">Posts:</span>
+      <span class="px-3 py-1 rounded-full text-sm bg-indigo-600 text-white
+                   ">
+        {{ user_profile.posts.count }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Back button -->
+  <div class="mt-8">
+    <a href="{% url 'users_list' %}" 
+       class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+      ← Back to Users
+    </a>
+  </div>
+</div>
+{% endblock %}
+

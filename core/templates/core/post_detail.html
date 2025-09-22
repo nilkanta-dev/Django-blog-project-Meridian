@@ -1,0 +1,232 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl w-full px-4">
+  <!-- Post Image -->
+  {% if post.image %}
+    <img src="{{ post.image.url }}"
+         alt="{{ post.title }}"
+         class="mb-4 w-full h-auto max-h-[550px] object-cover rounded-lg">
+  {% endif %}
+
+  <!-- Post Title -->
+  <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-500 leading-tight mb-2">
+    {{ post.title }}
+  </h1>
+
+  <!-- Meta Info -->
+  <p class="text-sm text-gray-400 mb-4">
+    <span>{{ post.published_date|date:"F j, Y" }}</span> • 
+    Posted By: <span class="font-medium">{{ post.author }}</span>
+  </p>
+
+  <!-- Post Content -->
+  <div class="prose prose-invert max-w-none text-white leading-relaxed">
+    {{ post.content|safe }}
+  </div>
+</div>
+
+{% if categories %}
+<div class="max-w-4xl w-full px-4 mt-4">
+  <div class="flex flex-wrap items-center">
+    <span class="font-bold mr-2">Tags:</span>
+    {% for cat in categories %}
+      <span class="mb-2 mr-2 px-2 py-1 bg-blue-200 text-blue-800 rounded text-xs sm:text-sm">
+        {{ cat.name }}
+      </span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Comments Section -->
+<div class="max-w-4xl w-full px-4 mt-10 bg-white p-6 rounded-lg shadow text-black">
+  <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">Comments</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <p class="text-green-600">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+
+  {% if comments %}
+    <div class="space-y-4">
+      {% for comment in comments %}
+        {% if not comment.parent %}
+          <div id="comment-{{ comment.pk }}" class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <p class="text-gray-700">{{ comment.content }}</p>
+            <p class="text-xs text-gray-500 mt-2">
+              By <span class="font-medium">{{ comment.user }}</span> • {{ comment.created_at|date:"M d, Y H:i" }}
+            </p>
+
+            <!-- Likes/Dislikes -->
+            <div class="flex items-center space-x-4 mt-2 text-sm">
+              <!-- Like -->
+              <button type="button"
+                      class="vote-btn flex items-center text-gray-500 hover:text-green-600"
+                      data-url="{% url 'comment_vote' post.slug comment.pk 1 %}"
+                      data-comment-id="{{ comment.pk }}"
+                      data-value="1">
+                <i class="fa-solid fa-thumbs-up"></i>
+                <span class="ml-1 like-count">{{ comment.like_count|default:'' }}</span>
+              </button>
+              <!-- Dislike -->
+              <button type="button"
+                      class="vote-btn flex items-center text-gray-500 hover:text-red-600"
+                      data-url="{% url 'comment_vote' post.slug comment.pk -1 %}"
+                      data-comment-id="{{ comment.pk }}"
+                      data-value="-1">
+                <i class="fa-solid fa-thumbs-down"></i>
+                <span class="ml-1 dislike-count">{{ comment.dislike_count|default:'' }}</span>
+              </button>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap items-center gap-3 mt-3 text-xs sm:text-sm">
+              {% if request.user == comment.user %}
+                <a href="{% url 'edit_comment' post.slug comment.pk %}" class="text-blue-600 hover:underline">Edit</a>
+                <form action="{% url 'delete_comment' post.slug comment.pk %}" method="post" class="inline">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="text-red-600 hover:underline"
+                          onclick="return confirm('Are you sure you want to delete this comment?');">
+                    Delete
+                  </button>
+                </form>
+              {% endif %}
+              <button type="button"
+                      onclick="document.getElementById('reply-form-{{ comment.pk }}').classList.toggle('hidden')"
+                      class="text-gray-600 hover:underline">
+                Reply
+              </button>
+            </div>
+
+            <!-- Reply Form -->
+            <div id="reply-form-{{ comment.pk }}" class="hidden mt-3">
+              <form method="post" action="{% url 'reply_comment' post.slug comment.pk %}">
+                {% csrf_token %}
+                <textarea name="content" rows="3"
+                  class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+                  placeholder="Write your reply..."></textarea>
+                <button type="submit"
+                  class="mt-2 px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                  Post Reply
+                </button>
+              </form>
+            </div>
+
+            <!-- Nested Replies -->
+            {% include "core/partials/comment_replies.html" with comment=comment %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-500 italic">No comments yet. Be the first to comment!</p>
+  {% endif %}
+
+  <!-- Add Comment -->
+  <div class="mt-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Leave a comment</h3>
+    <form method="post">
+      {% csrf_token %}
+      <textarea name="content" rows="4"
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-black"
+        placeholder="Write your comment..."></textarea>
+      <button type="submit"
+        class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        Post Comment
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+<script>
+function toggleReplies(id, btn) {
+  const container = document.getElementById(id);
+  if (container.classList.contains("hidden")) {
+    container.classList.remove("hidden");
+    btn.innerText = btn.innerText.replace("Show", "Hide");
+  } else {
+    container.classList.add("hidden");
+    btn.innerText = btn.innerText.replace("Hide", "Show");
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const voteButtons = document.querySelectorAll(".vote-btn");
+
+  voteButtons.forEach(btn => {
+    btn.addEventListener("click", function() {
+      const url = this.dataset.url;
+      const commentId = this.dataset.commentId;
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: ""
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Update counts dynamically
+        const commentDiv = document.getElementById(`comment-${commentId}`);
+        commentDiv.querySelector(".like-count").textContent = data.like_count > 0 ? data.like_count : "";
+        commentDiv.querySelector(".dislike-count").textContent = data.dislike_count > 0 ? data.dislike_count : "";
+      })
+      .catch(error => console.error("Error:", error));
+    });
+  });
+
+  // CSRF helper (Django docs version)
+  // function getCookie(name) {
+  //   let cookieValue = null;
+  //   if (document.cookie && document.cookie !== "") {
+  //     const cookies = document.cookie.split(";");
+  //     for (let i = 0; i < cookies.length; i++) {
+  //       const cookie = cookies[i].trim();
+  //       if (cookie.substring(0, name.length + 1) === (name + "=")) {
+  //         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   return cookieValue;
+  // }
+
+
+
+// or use regex
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.match(`; ${name}=([^;]*)`);
+  return parts ? decodeURIComponent(parts[1]) : null;
+
+
+}
+
+});
+
+
+
+</script>
+
+
+{% endblock %}

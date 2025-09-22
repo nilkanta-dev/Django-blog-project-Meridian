@@ -1,0 +1,120 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+{% if messages %}
+  <div id="messages" class="fixed top-4 left-1/2 -translate-x-1/2 space-y-2 z-50">
+    {% for message in messages %}
+      {% with tags=message.tags %}
+      <div class="message-item flex items-center px-4 py-3 rounded-lg shadow-lg opacity-100 transition-opacity duration-500
+                  {% if 'success' in tags %} bg-green-500 text-white
+                  {% elif 'error' in tags %} bg-red-500 text-white
+                  {% else %} bg-gray-800 text-white {% endif %}"
+           role="status" aria-live="polite">
+        {% if 'success' in tags %}
+          <!-- check icon -->
+          <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        {% endif %}
+        {% if 'error' in tags %}
+  <!-- error icon -->
+  <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          d="M6 18L18 6M6 6l12 12"></path>
+  </svg>
+{% endif %}
+
+        <span class="text-sm">{{ message }}</span>
+      </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('messages');
+      if (!container) return;
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        container.querySelectorAll('.message-item').forEach(el => {
+          el.classList.add('opacity-0');
+        });
+        setTimeout(() => container.remove(), 550);
+      }, 3000);
+    });
+  </script>
+{% endif %}
+
+
+
+<div class="max-w-md mx-auto mt-10 bg-black shadow-lg rounded-xl p-6 border-blue-300">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">Sign In</h2>
+    <form method="post" class="space-y-4" novalidate>
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div>
+            {% for error in form.username.errors %}
+            <p class="text-red-400">*{{ error }}<p>
+              {% endfor %}
+            {{ form.username }}
+            
+        </div>
+
+        <!--Password -->
+
+       <div class="relative">
+
+    {% for error in form.password.errors %}
+      <p class="text-red-400">*{{ error }}</p>
+    {% endfor %}
+    <div class="relative inline-block w-full">
+      {{form.password}}
+        
+        <button type="button" id="togglePassword" 
+                class="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700">
+
+
+            <!-- Open eye -->
+            <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <!-- Closed eye -->
+            <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.97 9.97 0 012.479-4.162m3.367-2.64A9.956 9.956 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.97 9.97 0 01-1.284 2.91M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 3l18 18" />
+            </svg>
+        </button>
+    </div>
+</div>
+        <button type="submit" 
+                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition">
+            Sign In
+        </button>       
+    </form>
+</div>
+
+<!-- Password toggle JS -->
+<script>
+  const togglePassword = document.getElementById("togglePassword"); //in the button
+  const passwordInput = document.getElementById("password"); //in the input
+  const eyeOpen = document.getElementById("eyeOpen"); //in the icon
+  const eyeClosed = document.getElementById("eyeClosed"); //in the icon
+
+  togglePassword.addEventListener("click", () => {
+    const isHidden = passwordInput.type === "password";
+    passwordInput.type = isHidden ? "text" : "password";
+    eyeOpen.classList.toggle("hidden", !isHidden);
+    eyeClosed.classList.toggle("hidden", isHidden);
+  });
+</script>
+
+{% endblock %}

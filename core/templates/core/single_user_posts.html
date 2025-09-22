@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+
+<title>{% block title %}{{author.username}}'s Posts{% endblock %}</title>
+
+
+
+{% block content %}
+All {{author.username | capfirst}}'s Posts - {{posts.count}} results
+
+ <div class="grid grid-cols-4 gap-4">
+{% for post in posts %}
+
+<div class=" border border-1 border-blue-300 py-2 px-2 my-2">
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-64 object-cover mb-2 rounded">
+    {% endif %}
+
+    
+    
+    <a href="{{ post.get_absolute_url }}">
+        <h3 class="font-bold text-blue-500">{{ post.title }}</h3>
+    </a>
+    <p>
+        <span>{{ post.published_date | date:"F j, Y" }}</span> 
+        <span class="ml-2">By:<a href=""> {{ post.author }}</a></span>
+    </p>
+    <p class="text-white">{{ post.content|truncatewords_html:40 }}</p>
+</div>
+
+
+{% endfor %}
+</div>
+
+{% endblock %}

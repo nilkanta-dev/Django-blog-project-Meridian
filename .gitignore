@@ -1,0 +1,25 @@
+# Django-specific
+*.log
+*.pot
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.pid
+
+# Media directory
+/media/
+/static/
+
+# Static files collected during deployment
+/staticfiles/
+
+# Environment variables and sensitive files
+.env
+
+
+
+
+

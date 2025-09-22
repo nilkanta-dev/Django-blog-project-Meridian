@@ -1,0 +1,67 @@
+{% extends 'userprofiles/dashboard.html' %}
+
+{% block content %}
+  <div class="w-full bg-white p-10 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-600">Edit Post</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      {{form.media}}
+      
+      <!-- Title Field -->
+      <div>
+        <label for="id_title" class="block text-sm font-medium text-gray-700">Title</label>
+        {{ form.title }}  <!-- No need for |add_class -->
+      </div>
+
+      <!-- Content Field -->
+      <div>
+        <label for="id_content" class="block text-sm font-medium text-gray-700">Content</label>
+        {{ form.content }}  <!-- No need for |add_class -->
+      </div>
+
+     <!-- Image Field -->
+<div>
+  <label for="id_image" class="block text-sm font-medium text-gray-700">Image</label>
+  
+  {% if form.instance.image %}
+    <div class="mb-3">
+      <img src="{{ form.instance.image.url }}" 
+           alt="Current Image" 
+           class="h-32 w-auto rounded-md shadow-md border" />
+    </div>
+  {% endif %}
+
+  {{ form.image }}
+</div>
+
+      <div class="">
+        Is published {{ form.is_published }}  
+      </div>
+{% if user.is_superuser %}
+      <div class="">
+        Is featured {{ form.is_featured }}  
+      </div>
+      {% endif %}
+
+      <!-- Slug Field -->
+      <div>
+        <label for="id_slug" class="block text-sm font-medium text-gray-700">Slug</label>
+        {{ form.slug }}  <!-- No need for |add_class -->
+      </div>
+
+      <!-- Save Changes Button -->
+      <div class="flex justify-end">
+        <button type="submit" 
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition">
+          Save Changes
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-4 text-center">
+      <a href="{% url 'post-detail' post.id %}" 
+         class="text-blue-500 hover:text-blue-700">Back to Post</a>
+    </div>
+  </div>
+{% endblock %}
