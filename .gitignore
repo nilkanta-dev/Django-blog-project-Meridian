@@ -11,7 +11,8 @@ __pycache__/
 
 # Media directory
 /media/
-/static/
+/static/js
+/static/images
 
 # Static files collected during deployment
 /staticfiles/
