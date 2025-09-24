@@ -12,7 +12,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+
 import dj_database_url
+
+
+
+def str_to_bool(v):
+    return str(v).lower() in ("true", "1", "t", "yes")
+
+DEBUG = str_to_bool(config("DEBUG", default=False))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +33,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG',default=False,cast=bool)
 
-ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='localhost')]
+ALLOWED_HOSTS = [config('RENDER_EXTERNAL_HOSTNAME', default='localhost'),'127.0.0.1']
 
 #Bleach Settings
 BLEACH_ALLOWED_TAGS = [
@@ -118,14 +125,10 @@ THUMBNAIL_ALIASES = {
 
 
 
-
-
-
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if config("DEBUG", default=False, cast=bool):
+if DEBUG:
     # Local dev with sqlite
     DATABASES = {
         "default": {
@@ -133,11 +136,29 @@ if config("DEBUG", default=False, cast=bool):
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    MEDIA_URL = "/media/"
 else:
-    # Production on Render with Postgres
+    # Production with Postgres
     DATABASES = {
         "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    MEDIA_URL = f"https://{config('SUPABASE_PROJECT_REF')}.supabase.co/storage/v1/object/public/{config('AWS_STORAGE_BUCKET_NAME')}/"
+
+
+
+
+#SUPABASE CONFIG
+
+# Supabase Storage (S3-compatible) settings
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")  # Your Supabase S3 Access Key
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")  # Your Supabase S3 Secret Key
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default="blog-images")  # Bucket name
+AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")  # e.g., https://your-project-id.supabase.co/storage/v1/s3
+AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME", default="us-east-1")  # Adjust if needed
+AWS_S3_SIGNATURE_VERSION = "s3v4"  # Required for custom endpoints
+
 
 
 # Password validation
@@ -181,8 +202,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
