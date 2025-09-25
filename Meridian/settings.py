@@ -165,6 +165,7 @@ AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")  # e.g., https://your-projec
 AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME", default="us-east-1")  # Adjust if needed
 AWS_S3_SIGNATURE_VERSION = "s3v4"  # Required for custom endpoints
 AWS_QUERYSTRING_AUTH = False
+SUPABASE_PROJECT_REF = config('SUPABASE_PROJECT_REF')
 
 
 

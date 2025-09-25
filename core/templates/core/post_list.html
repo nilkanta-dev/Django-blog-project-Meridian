@@ -64,10 +64,28 @@
     <!-- Other Posts -->
     {% for post in posts %}
     <div class="py-2 px-2 my-2">
-        {% if post.image %}
+        <!-- {% if post.image %}
+
+
             <img src="{{ post.image|thumbnail_url:'post_list' }}" 
                  alt="{{ post.title }}" 
                  class="w-full mb-2 rounded-lg object-cover">
+        
+        {% endif %}
+ -->
+
+        {% if post.image %}
+        {% if debug %}
+       
+        <img src="{{ post.image|thumbnail_url:'post_list' }}" 
+            alt="{{ post.title }}" 
+            class="w-full mb-2 rounded-lg object-cover">
+        
+        {% else %}
+        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ post.image.name }}?width=800&height=450&fit=crop" 
+             alt="{{ post.title }}" class="w-full mb-2 rounded-lg object-cover">       
+
+        {% endif %}
         {% endif %}
         
         <a href="{{ post.get_absolute_url }}">
