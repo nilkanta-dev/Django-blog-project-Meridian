@@ -1,6 +1,7 @@
 
 # core/context_processors.py
 from django.conf import settings
+import os
 
 def site_info(request):
     """
@@ -10,6 +11,6 @@ def site_info(request):
         'brand_name': 'Meridian',
         'support_email': 'meridian@info.com',
         'debug': settings.DEBUG,
-        'supabase_ref': getattr(settings, 'SUPABASE_PROJECT_REF', ''),
-        'bucket': getattr(settings, 'AWS_STORAGE_BUCKET_NAME', 'blog-images'),
+        'supabase_ref': os.environ.get('SUPABASE_PROJECT_REF',""),
+        'bucket': os.environ.get('AWS_STORAGE_BUCKET_NAME', 'blog-images'),
     }
