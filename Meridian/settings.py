@@ -123,7 +123,7 @@ THUMBNAIL_ALIASES = {
     },
 }
 
-THUMBNAIL_DEBUG = True
+
 
 
 
