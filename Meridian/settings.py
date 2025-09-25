@@ -116,12 +116,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "Meridian.wsgi.application"
 
-# settings.py
+# settings for easy-thumbnails
 THUMBNAIL_ALIASES = {
     "": {
         "post_list": {"size": (400, 250), "crop": True},
     },
 }
+
+THUMBNAIL_DEBUG = True
+
 
 
 
@@ -146,6 +149,7 @@ else:
         "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    THUMBNAIL_DEFAULT_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f"https://{config('SUPABASE_PROJECT_REF')}.supabase.co/storage/v1/object/public/{config('AWS_STORAGE_BUCKET_NAME')}/"
 
 
