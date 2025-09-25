@@ -160,6 +160,7 @@ AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", default="blog-images
 AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")  # e.g., https://your-project-id.supabase.co/storage/v1/s3
 AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME", default="us-east-1")  # Adjust if needed
 AWS_S3_SIGNATURE_VERSION = "s3v4"  # Required for custom endpoints
+AWS_QUERYSTRING_AUTH = False
 
 
 
