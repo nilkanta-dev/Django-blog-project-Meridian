@@ -138,6 +138,8 @@ if DEBUG:
     }
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+
 else:
     # Production with Postgres
     DATABASES = {
@@ -203,8 +205,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Default primary key field type
