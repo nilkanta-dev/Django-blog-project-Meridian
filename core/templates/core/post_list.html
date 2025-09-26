@@ -34,7 +34,7 @@
         <img src="{{ featured_post.image | thumbnail_url:'post_list' }}" 
              alt="{{ featured_post.title }}" class="w-full mb-2 rounded-lg object-cover">
     {% else %}
-        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ featured_post.image.name }}?width=800&height=450&fit=crop" 
+        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ featured_post.image.name }}?width=400&height=250&fit=crop" 
              alt="{{ featured_post.title }}" class="w-full mb-2 rounded-lg object-cover">
     {% endif %}
 {% endif %}
@@ -82,7 +82,7 @@
             class="w-full mb-2 rounded-lg object-cover">
         
         {% else %}
-        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ post.image.name }}?width=800&height=450&fit=crop" 
+        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ post.image.name }}?width=400&height=250&fit=crop" 
              alt="{{ post.title }}" class="w-full mb-2 rounded-lg object-cover">       
 
         {% endif %}
