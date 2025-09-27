@@ -57,6 +57,7 @@
       </button>
       <button type="button"
               id="confirmDeleteBtn"
+              onclick="confirmDelete()" 
               class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
         Yes, Delete
       </button>
@@ -185,6 +186,18 @@
       }
     } catch (error) {
       console.error("Error in closeConfirmModal:", error);
+    }
+  }
+
+  function confirmDelete() {
+    try {
+      if (currentForm) {
+        currentForm.submit(); // Submit the stored form
+      } else {
+        console.error("No form selected for submission");
+      }
+    } catch (error) {
+      console.error("Error in confirmDelete:", error);
     }
   }
 
