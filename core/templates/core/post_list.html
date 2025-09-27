@@ -82,7 +82,7 @@
             class="w-full mb-2 rounded-lg object-cover">
         
         {% else %}
-        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/object/public/{{ bucket }}/{{ post.image.name }}?width=400&height=250&fit=crop" 
+        <img src="https://{{ supabase_ref }}.supabase.co/storage/v1/render/image/public/{{ bucket }}/{{ post.image.name }}?width=400&height=250&resize=cover" 
              alt="{{ post.title }}" class="w-full mb-2 rounded-lg object-cover">       
 
         {% endif %}
