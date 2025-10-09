@@ -11,6 +11,19 @@ from .forms import PostForm
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.utils import timezone
+from core.models import APIKey
+
+
+
+@login_required
+def api_keys(request):
+    if request.method == 'POST':
+        name = request.POST.get('name','')
+        APIKey.objects.create(user=request.user,name=name)
+        return redirect('api_keys')
+
+    keys = APIKey.objects.filter(user = request.user)
+    return render(request,'userprofiles/api_keys.html',{'keys':keys})
 
 
 @login_required

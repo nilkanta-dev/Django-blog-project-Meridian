@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Profile,Post,Comment,Category
+from core.models import Profile,Post,Comment,Category,CommentVote, APIKey
 from userprofiles.forms import PostForm
 
 @admin.register(Post)
@@ -16,6 +16,8 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Profile)
 admin.site.register(Comment)
 admin.site.register(Category)
+admin.site.register(CommentVote)
+admin.site.register(APIKey)
 
 
 

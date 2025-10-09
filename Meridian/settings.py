@@ -74,8 +74,54 @@ INSTALLED_APPS = [
     "easy_thumbnails",
     "tinymce",
     "django_bleach",
-    "debug_toolbar"
+    "debug_toolbar",
+    "rest_framework",
+    "django_filters",
+    "drf_spectacular",
+    "rest_framework.authtoken"
+
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "core.api.authentication.APIKeyAuthentication",  
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",  
+    ),
+
+    "DEFAULT_THROTTLE_CLASSES": [
+        "core.api.throttling.APIKeyRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "api_key": "100/day",
+        "user": "500/day",
+        "anon": "50/day"
+    },
+
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
+
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Meridian Blog API',
+    'DESCRIPTION': 'API for Meridian blog posts and categories',
+    'VERSION': '1.0.0',
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -141,7 +187,7 @@ if DEBUG:
 else:
     # Production with Postgres
     DATABASES = {
-        "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
+        "default": dj_database_url.config(conn_max_age=600,ssl_require=True)
     }
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     THUMBNAIL_DEFAULT_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

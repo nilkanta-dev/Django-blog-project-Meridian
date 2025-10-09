@@ -4,8 +4,10 @@ from userprofiles.views import (
    profile_view,edit_post,
    users_list,view_user_profile,
    delete_user,delete_post,create_post,publish_post)
-from core.views import AllUsersPostListView
 
+
+from core.views import AllUsersPostListView
+from .views import api_keys
 from django.contrib.auth.views import LogoutView,LoginView
 from .forms import SignInForm
 
@@ -24,5 +26,6 @@ urlpatterns = [
    path('dashboard/<int:post_id>/delete',delete_post,name='delete_post'),
    path('dashboard/create_post',create_post,name='create_post'),
    path('post/<slug:slug>/publish',publish_post,name='publish_post'),
-   path('dashboard/all-users-post/',AllUsersPostListView.as_view(),name="all_users_post_list")
+   path('dashboard/all-users-post/',AllUsersPostListView.as_view(),name="all_users_post_list"),
+   path('api-keys/',api_keys,name='api_keys')
 ]

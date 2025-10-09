@@ -45,9 +45,14 @@
             {% endif %}
 
 
-            <a href="{% url 'create_post' %}" 
+            <a href="{ url 'create_post' %}" 
                class="block py-2 px-4 rounded-lg hover:bg-gray-800 transition">
                Create a Post
+            </a>
+
+            <a href="{% url 'api_keys' %}" 
+               class="block py-2 px-4 rounded-lg hover:bg-gray-800 transition">
+               API Keys
             </a>
 
             {% if user.is_authenticated and user.is_superuser %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.views.generic import ListView,DetailView
-from .models import Post,Category,Comment,CommentVote
+from .models import Post,Category,Comment,CommentVote,APIKey
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,8 +10,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixi
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from .forms import SearchForm
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from drf_spectacular.views import SpectacularAPIView,SpectacularSwaggerView
 
 
+
+
+class SwaggerView(LoginRequiredMixin,SpectacularSwaggerView):
+
+	template_name = 'core/swagger_ui.html'
+	login_url = '/signin/'
+	redirect_field_name = 'next'
+
+
+
+# @method_decorator(cache_page(60 * 15),name='dispatch')
 class PostListView(ListView):
     model = Post
     template_name = 'core/post_list.html'
@@ -61,7 +75,7 @@ class AllUsersPostListView(PermissionRequiredMixin,PostListView):
 	permission_required = 'core.can_delete_post'
 	raise_exception = True
 
-
+# @method_decorator(cache_page(60 * 15), name='dispatch')
 class PostDetailView(DetailView):
 	model = Post
 	template_name = 'core/post_detail.html'

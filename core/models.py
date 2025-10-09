@@ -7,6 +7,8 @@ from tinymce.models import HTMLField
 from django_bleach.models import BleachField
 from datetime import timedelta
 from django.db.models import Q
+import secrets
+
 
 
 class Profile(models.Model):
@@ -119,3 +121,27 @@ class CommentVote(models.Model):
 
 	class Meta:
 		unique_together = ("comment","user")
+
+
+class APIKey(models.Model):
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	key = models.CharField(max_length=40,unique=True,blank=True)
+	name = models.CharField(max_length=100,help_text="Optional name for your key")
+	created_at = models.DateTimeField(auto_now_add=True)
+	is_read_only = models.BooleanField(default=True)
+	is_active = models.BooleanField(default=True)
+
+	def save(self,*args,**kwargs):
+		if not self.key:
+			self.key = secrets.token_hex(20)
+		super().save(*args,**kwargs)
+
+
+	def __str__(self):
+		return f"{self.user.username} - {self.name or self.key[:8]}"
+
+
+
+
+
+	

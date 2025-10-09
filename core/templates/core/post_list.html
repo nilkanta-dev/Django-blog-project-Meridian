@@ -23,11 +23,7 @@
     {% if featured_post %}
     <!-- Featured Post -->
     <div class="sm:col-span-2 sm:row-span-2 py-2 px-2 my-2">
-        <!-- {% if featured_post.image %}
-            <img src="{{ featured_post.image |thumbnail_url:'post_list' }}" 
-                 alt="{{ featured_post.title }}" 
-                 class="w-full mb-2 rounded-lg object-cover">
-        {% endif %} -->
+       
 
         {% if featured_post.image %}
         {% if debug %}
@@ -64,15 +60,7 @@
     <!-- Other Posts -->
     {% for post in posts %}
     <div class="py-2 px-2 my-2">
-        <!-- {% if post.image %}
-
-
-            <img src="{{ post.image|thumbnail_url:'post_list' }}" 
-                 alt="{{ post.title }}" 
-                 class="w-full mb-2 rounded-lg object-cover">
-        
-        {% endif %}
- -->
+       
 
         {% if post.image %}
         {% if debug %}

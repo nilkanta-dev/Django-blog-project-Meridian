@@ -4,6 +4,8 @@
         <!-- Static Links -->
         <li><a href="/" class="hover:text-indigo-300">Home</a></li>
         <li><a href="" class="hover:text-indigo-300">About</a></li>
+        <li><a href="{% url 'swagger-ui' %}" class="hover:text-indigo-300">API</a></li>
+
 
         {% if user.is_authenticated %}
         <!-- Dropdown -->
