@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+
+<div class="container mx-auto py-10">
+  <h1 class="text-3xl font-bold mb-6 text-center">API Documentation</h1>
+
+  <!-- Swagger UI container -->
+  <div id="swagger-ui" class="bg-white shadow rounded-lg p-4"></div>
+</div>
+
+<!-- Swagger UI Scripts -->
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+<script>
+  window.onload = function() {
+    const ui = SwaggerUIBundle({
+      url: "{% url 'schema' %}",
+      dom_id: '#swagger-ui',
+      presets: [SwaggerUIBundle.presets.apis],
+      layout: "BaseLayout",
+    });
+  };
+</script>
+{% endblock %}
