@@ -25,7 +25,7 @@ It supports user accounts, post management with rich text editing (TinyMCE), nes
   - Delete or moderate any user’s post or comment(Admin/Staff).
   - Manage user permissions(Admin).
 
-### 🗂️ API System
+### API System
 - Built using **Django REST Framework (DRF)**.
 - Each user can generate a unique **API key** from their dashboard.
 - API is read-only.
@@ -39,7 +39,7 @@ It supports user accounts, post management with rich text editing (TinyMCE), nes
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Tool | Purpose |
 |------|----------|
